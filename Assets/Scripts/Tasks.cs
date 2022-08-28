@@ -16,13 +16,13 @@ public class Tasks : MonoBehaviour
         _cancelTokenSource = new CancellationTokenSource();
         _cancelToken = _cancelTokenSource.Token;
 
-        RunTasks(_cancelToken);
+        RunTasksAsync(_cancelToken);
     }
 
-    private async void RunTasks(CancellationToken cancelToken)
+    private async void RunTasksAsync(CancellationToken cancelToken)
     {
-        var task1 = TimeLog(cancelToken);
-        var task2 = UpdateLog(cancelToken);
+        var task1 = TimeLogAsync(cancelToken);
+        var task2 = UpdateLogAsync(cancelToken);
         var resultTask = await Task.WhenAny(task1, task2);
 
         Debug.Log("Result: " + resultTask.Result.ToString());
@@ -36,7 +36,7 @@ public class Tasks : MonoBehaviour
         _cancelTokenSource.Cancel();
     }
 
-    private async Task<bool> TimeLog(CancellationToken cancelToken)
+    private async Task<bool> TimeLogAsync(CancellationToken cancelToken)
     {
         var time = 0f;
 
@@ -55,7 +55,7 @@ public class Tasks : MonoBehaviour
         return true;
     }
 
-    private async Task<bool> UpdateLog(CancellationToken cancelToken)
+    private async Task<bool> UpdateLogAsync(CancellationToken cancelToken)
     {
         var updates = 0;
         while (updates < 310) // примерное число апдейтов на моем ПК за 1 секунду
