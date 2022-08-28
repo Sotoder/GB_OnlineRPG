@@ -27,7 +27,7 @@ public class Tasks : MonoBehaviour
 
         Debug.Log("Result: " + resultTask.Result.ToString());
         _isTasksStarted = false;
-        _cancelTokenSource.Cancel(); // stop others tasks
+        _cancelTokenSource.Cancel(); // stop other tasks
         _cancelTokenSource.Dispose();
     }
 
@@ -58,7 +58,7 @@ public class Tasks : MonoBehaviour
     private async Task<bool> UpdateLog(CancellationToken cancelToken)
     {
         var updates = 0;
-        while (updates < 320) // примерное число апдейтов на моем ПК за 1 секунду
+        while (updates < 310) // примерное число апдейтов на моем ПК за 1 секунду
         {
             if (cancelToken.IsCancellationRequested)
             {
