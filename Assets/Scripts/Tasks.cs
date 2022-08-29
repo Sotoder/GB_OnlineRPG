@@ -75,6 +75,9 @@ public class Tasks : MonoBehaviour
 
     private void OnDestroy()
     {
-        _cancelTokenSource.Dispose();
+        if (_cancelTokenSource != null)
+        {
+            _cancelTokenSource.Dispose();
+        }
     }
 }

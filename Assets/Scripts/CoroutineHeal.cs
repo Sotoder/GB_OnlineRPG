@@ -32,16 +32,35 @@ public class CoroutineHeal: MonoBehaviour
         _isHealing = false;
         StopCoroutine(_healingCoroutine);
         StartCoroutine(Wait());
+        _health.Value = 0;
+    }
+
+    private void Pause()
+    {
+        _isHealing = false;
+        StopCoroutine(_healingCoroutine);
+        StartCoroutine(Wait());
     }
 
     private IEnumerator Healing()
     {
         _isHealing = true;
 
+        var time = 0f;
+
         while (_isHealing)
         {
-            _health.Value += 5f;
-            yield return new WaitForSeconds(0.5f);
+            if (time >= 3f)
+            {
+                Pause();
+            }
+            else
+            {
+                _health.Value += 5f;
+                time += 0.5f;
+                yield return new WaitForSeconds(0.5f);
+            }
+            
         }
     }
 
@@ -50,7 +69,6 @@ public class CoroutineHeal: MonoBehaviour
         _isHealOnPause = true;
         yield return new WaitForSeconds(3f);
         _isHealOnPause = false;
-        _health.Value = 0;
     }
 
     private void OnDestroy()
