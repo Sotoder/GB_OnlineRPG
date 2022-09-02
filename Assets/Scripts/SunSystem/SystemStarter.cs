@@ -72,7 +72,7 @@ public class SystemStarter : MonoBehaviour
         for(int i = 0; i < _configurator.Planets.Count; i++)
         {
             var planet = Instantiate(_configurator.Planets[i].Planet);
-            var rndPositionX = Random.Range(0, 1f) > 0.5f ? _configurator.Planets[i].Distance : _configurator.Planets[i].Distance;
+            var rndPositionX = Random.Range(0, 1f) > 0.5f ? _configurator.Planets[i].Distance : -_configurator.Planets[i].Distance;
             planet.transform.position = new Vector3(rndPositionX, 0, 0);
 
             // правильная генерация угла отклонения (вроде бы)
