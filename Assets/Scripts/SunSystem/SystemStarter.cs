@@ -13,16 +13,29 @@ public class SystemStarter : MonoBehaviour
     private NativeArray<float> _axisSpeeds;
     private NativeArray<float> _starSpeeds;
 
+    private NativeArray<float> _rndAngles;
+    private NativeArray<float> _rndPositions;
+
     private void Awake()
     {
-        var transforms = GenerateSystem();
-
         if (!IsArrayCreated(_planetsTransform))
         {
-            _planetsTransform = new TransformAccessArray(transforms);
+            _planetsTransform = new TransformAccessArray(_configurator.Planets.Count);
         }
 
-        if(!IsArrayCreated(_axisAngles))
+        if (!IsArrayCreated(_rndAngles))
+        {
+            _rndAngles = new NativeArray<float>(_configurator.Planets.Count, Allocator.Persistent);
+        }
+
+        if (!IsArrayCreated(_rndPositions))
+        {
+            _rndPositions = new NativeArray<float>(_configurator.Planets.Count, Allocator.Persistent);
+        }
+
+        GenerateSystem();
+
+        if (!IsArrayCreated(_axisAngles))
         {
             _axisAngles = new NativeArray<float>(_configurator.Planets.Count, Allocator.Persistent);
         }
@@ -62,28 +75,34 @@ public class SystemStarter : MonoBehaviour
         jobHandle.Complete();
     }
 
-    private Transform[] GenerateSystem()
+    private void GenerateSystem()
     {
-        Transform[] transforms = new Transform[_configurator.Planets.Count];
-
         var star = Instantiate(_configurator.Star);
         star.transform.position = Vector3.zero;
 
         for(int i = 0; i < _configurator.Planets.Count; i++)
         {
             var planet = Instantiate(_configurator.Planets[i].Planet);
+            _planetsTransform.Add(planet.transform);
+
             var rndPositionX = Random.Range(0, 1f) > 0.5f ? _configurator.Planets[i].Distance : -_configurator.Planets[i].Distance;
-            planet.transform.position = new Vector3(rndPositionX, 0, 0);
+            _rndPositions[i] = rndPositionX;
 
-            // правильная генерация угла отклонения (вроде бы)
             var rndAngle = Random.Range(0, 360);
-            Quaternion rotation = Quaternion.Euler(0, rndAngle, 0);
-            planet.transform.position = rotation * planet.transform.position;
-
-            transforms[i] = planet.transform;
+            _rndAngles[i] = rndAngle;
         }
 
-        return transforms;
+        PlanetsGenerateJob job = new PlanetsGenerateJob
+        {
+            RndAngles = _rndAngles,
+            RndPositions = _rndPositions
+        };
+
+        JobHandle jobHandle = job.Schedule(_planetsTransform);
+        jobHandle.Complete();
+
+        DisposeArray(_rndAngles);
+        DisposeArray(_rndPositions);
     }
 
     private bool IsArrayCreated<T>(NativeArray<T> array) where T : struct
@@ -108,24 +127,25 @@ public class SystemStarter : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (IsArrayCreated(_planetsTransform))
-        {
-            _planetsTransform.Dispose();
-        }
+        DisposeArray(_planetsTransform);
+        DisposeArray(_axisAngles);
+        DisposeArray(_axisSpeeds);
+        DisposeArray(_starSpeeds);
+    }
 
-        if(IsArrayCreated(_axisAngles))
+    private void DisposeArray<T>(NativeArray<T> array) where T : struct
+    {
+        if (IsArrayCreated(array))
         {
-            _axisAngles.Dispose();
+            array.Dispose();
         }
+    }
 
-        if (IsArrayCreated(_axisSpeeds))
+    private void DisposeArray(TransformAccessArray array)
+    {
+        if (IsArrayCreated(array))
         {
-            _axisSpeeds.Dispose();
-        }
-
-        if (IsArrayCreated(_starSpeeds))
-        {
-            _starSpeeds.Dispose();
+            array.Dispose();
         }
     }
 }
