@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 495f696229c69644dac6685a9e22b00b, type: 3}
+  m_Name: SystemConfigurator
+  m_EditorClassIdentifier: 
+  _star: {fileID: 7990616176712271079, guid: 376c474544721d04c8d9a4f1fd9f61f7, type: 3}
+  _planets:
+  - _planet: {fileID: 8986677512481014812, guid: 9186e878431159547a52232d3475e239, type: 3}
+    _distance: 3
+    _rotateAroundAxisSpeed: 10
+    _rotateAroundStarSpeed: 11
+  - _planet: {fileID: 6732395692756115348, guid: d15aeceb6819f7740a73e5e5ff5a5312, type: 3}
+    _distance: 5
+    _rotateAroundAxisSpeed: 20
+    _rotateAroundStarSpeed: 5
+  - _planet: {fileID: 7857964292399637109, guid: 38aa869c120499345bc7939576551f90, type: 3}
+    _distance: 8
+    _rotateAroundAxisSpeed: 30
+    _rotateAroundStarSpeed: 10
+  - _planet: {fileID: 2238718577281077625, guid: e74130d42cd7cbe48a79669416c64d81, type: 3}
+    _distance: 11
+    _rotateAroundAxisSpeed: 50
+    _rotateAroundStarSpeed: 7
+  - _planet: {fileID: 2823595277294547686, guid: 94281aeb723da2346853eaeaa81919fb, type: 3}
+    _distance: 16
+    _rotateAroundAxisSpeed: 40
+    _rotateAroundStarSpeed: 4
+  - _planet: {fileID: 5806493594383068557, guid: 88ac8d9f369d630459dbab25af38bc9a, type: 3}
+    _distance: 20
+    _rotateAroundAxisSpeed: 30
+    _rotateAroundStarSpeed: 5
+  - _planet: {fileID: 8956510599244668912, guid: 544721ecf89f615439530727a5e529f2, type: 3}
+    _distance: 23
+    _rotateAroundAxisSpeed: 40
+    _rotateAroundStarSpeed: 8
+  - _planet: {fileID: 3691573266604353731, guid: fff508f488430c34e89d4c6d4bb8672d, type: 3}
+    _distance: 25
+    _rotateAroundAxisSpeed: 30
+    _rotateAroundStarSpeed: 10
+  - _planet: {fileID: 1930744996830442844, guid: fa5841b0253ed3b4da90e8c081696bac, type: 3}
+    _distance: 27
+    _rotateAroundAxisSpeed: 35
+    _rotateAroundStarSpeed: 11
