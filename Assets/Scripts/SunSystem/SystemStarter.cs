@@ -125,13 +125,6 @@ public class SystemStarter : MonoBehaviour
         return false;
     }
 
-    private void OnDestroy()
-    {
-        DisposeArray(_planetsTransform);
-        DisposeArray(_axisAngles);
-        DisposeArray(_axisSpeeds);
-        DisposeArray(_starSpeeds);
-    }
 
     private void DisposeArray<T>(NativeArray<T> array) where T : struct
     {
@@ -147,5 +140,13 @@ public class SystemStarter : MonoBehaviour
         {
             array.Dispose();
         }
+    }
+
+    private void OnDestroy()
+    {
+        DisposeArray(_planetsTransform);
+        DisposeArray(_axisAngles);
+        DisposeArray(_axisSpeeds);
+        DisposeArray(_starSpeeds);
     }
 }
