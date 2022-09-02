@@ -27,7 +27,7 @@ MonoBehaviour:
     _rotateAroundAxisSpeed: 30
     _rotateAroundStarSpeed: 8
   - _planet: {fileID: 2238718577281077625, guid: e74130d42cd7cbe48a79669416c64d81, type: 3}
-    _distance: 13
+    _distance: 11
     _rotateAroundAxisSpeed: 50
     _rotateAroundStarSpeed: 7
   - _planet: {fileID: 2823595277294547686, guid: 94281aeb723da2346853eaeaa81919fb, type: 3}
@@ -35,18 +35,18 @@ MonoBehaviour:
     _rotateAroundAxisSpeed: 40
     _rotateAroundStarSpeed: 4
   - _planet: {fileID: 5806493594383068557, guid: 88ac8d9f369d630459dbab25af38bc9a, type: 3}
-    _distance: 18
+    _distance: 20
     _rotateAroundAxisSpeed: 30
     _rotateAroundStarSpeed: 8
   - _planet: {fileID: 8956510599244668912, guid: 544721ecf89f615439530727a5e529f2, type: 3}
-    _distance: 20
+    _distance: 23
     _rotateAroundAxisSpeed: 40
     _rotateAroundStarSpeed: 9
   - _planet: {fileID: 3691573266604353731, guid: fff508f488430c34e89d4c6d4bb8672d, type: 3}
-    _distance: 23
+    _distance: 25
     _rotateAroundAxisSpeed: 30
     _rotateAroundStarSpeed: 6
   - _planet: {fileID: 1930744996830442844, guid: fa5841b0253ed3b4da90e8c081696bac, type: 3}
-    _distance: 25
+    _distance: 27
     _rotateAroundAxisSpeed: 35
     _rotateAroundStarSpeed: 8

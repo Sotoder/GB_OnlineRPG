@@ -72,9 +72,13 @@ public class SystemStarter : MonoBehaviour
         for(int i = 0; i < _configurator.Planets.Count; i++)
         {
             var planet = Instantiate(_configurator.Planets[i].Planet);
-            var rndPositionZ = Random.insideUnitSphere.z * _configurator.Planets[i].Distance;
-            var rndPositionX = Random.Range(0, 1f) > 0.5f ? _configurator.Planets[i].Distance : -_configurator.Planets[i].Distance;
-            planet.transform.position = new Vector3(rndPositionX, 0, rndPositionZ);
+            var rndPositionX = Random.Range(0, 1f) > 0.5f ? _configurator.Planets[i].Distance : _configurator.Planets[i].Distance;
+            planet.transform.position = new Vector3(rndPositionX, 0, 0);
+
+            // правильная генерация угла отклонения (вроде бы)
+            var rndAngle = Random.Range(0, 360);
+            Quaternion rotation = Quaternion.Euler(0, rndAngle, 0);
+            planet.transform.position = rotation * planet.transform.position;
 
             transforms[i] = planet.transform;
         }
