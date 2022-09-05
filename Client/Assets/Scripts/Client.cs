@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
 using TMPro;
+using System;
 
 public class Client : MonoBehaviour
 {
@@ -35,7 +36,18 @@ public class Client : MonoBehaviour
         }
         else
             Debug.Log((NetworkError)error);
+
+        nameField.onSubmit.AddListener(OnNameFieldWasChange);
     }
+
+    private void OnNameFieldWasChange(string name)
+    {
+        if(!nameField.wasCanceled)
+        {
+            SendMessage($"-setname {name}");
+        }
+    }
+
     public void Disconnect()
     {
         if (!isConnected) return;
@@ -66,7 +78,7 @@ public class Client : MonoBehaviour
                     break;
                 case NetworkEventType.DataEvent:
                     string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
-                    onMessageReceive?.Invoke(message);
+                    ParseMessege(message);
                     Debug.Log(message);
                     break;
                 case NetworkEventType.DisconnectEvent:
@@ -81,6 +93,38 @@ public class Client : MonoBehaviour
             bufferSize, out dataSize, out error);
         }
     }
+
+    private void ParseMessege(string message)
+    {
+        if (string.Equals("-", message[0].ToString()))
+        {
+            string commandString = "";
+            int commandEndIndex = 0;
+
+            for (int i = 0; i < message.Length; i++)
+            {
+                if (message[i].ToString() != " ")
+                {
+                    commandString += message[i];
+                    commandEndIndex = i;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (string.Equals("-setnamecomplite", commandString))
+            {
+                nameField.text = message.Substring(commandEndIndex + 2);
+            }
+        }
+        else
+        {
+            onMessageReceive?.Invoke(message);
+        }
+    }
+
     public void SendMessage(string message)
     {
         byte[] buffer = Encoding.Unicode.GetBytes(message);

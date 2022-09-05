@@ -68,7 +68,7 @@ public class Server : MonoBehaviour
                     }
                     else
                     {
-                        SendMessageToAll($"{_usersMatchings[connectionId].Name}: {message}");
+                        ParseMessege(connectionId, message);
                     }
 
                     Debug.Log($"{_usersMatchings[connectionId].Name}: {message}");
@@ -85,6 +85,45 @@ public class Server : MonoBehaviour
             bufferSize, out dataSize, out error);
         }
     }
+
+    private void ParseMessege(int connectionId, string message)
+    {
+        if(string.Equals("-",message[0].ToString()))
+        {
+            string commandString = "";
+            int commandEndIndex = 0;
+
+            for (int i = 0; i < message.Length; i++)
+            {
+                if(message[i].ToString() != " ")
+                {
+                    commandString += message[i];
+                    commandEndIndex = i;
+                } else
+                {
+                    break;
+                }
+            }
+
+            if (string.Equals("-setname", commandString))
+            {
+                var oldName = _usersMatchings[connectionId].Name;
+                _usersMatchings[connectionId].Name = message.Substring(commandEndIndex + 2);
+                SendMessage($"-setnamecomplite {_usersMatchings[connectionId].Name}", connectionId);
+                SendMessageToAll($"{oldName} change name to {_usersMatchings[connectionId].Name}");
+            }
+            else
+            {
+                SendMessage("Неверная команда", connectionId);
+                SendMessage("Для смены имени используйте команду -setname", connectionId);
+            }
+
+        } else
+        {
+            SendMessageToAll($"{_usersMatchings[connectionId].Name}: {message}");
+        }
+    }
+
     public void SendMessageToAll(string message)
     {
         foreach(var user in _usersMatchings)
@@ -98,22 +137,5 @@ public class Server : MonoBehaviour
         NetworkTransport.Send(hostID, connectionID, reliableChannel, buffer, message.Length *
         sizeof(char), out error);
         if ((NetworkError)error != NetworkError.Ok) Debug.Log((NetworkError)error);
-    }
-}
-
-public class User
-{
-    private string _name;
-    private bool _isNameSet;
-
-    public bool IsNameSet => _isNameSet;
-    public string Name
-    {
-        get => _name;
-        set
-        {
-            _name = value;
-            _isNameSet = true;
-        }
     }
 }

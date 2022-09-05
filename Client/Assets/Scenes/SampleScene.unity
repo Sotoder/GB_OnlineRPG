@@ -970,6 +970,7 @@ MonoBehaviour:
   inputField: {fileID: 4016177951099115826}
   textField: {fileID: 429590530}
   client: {fileID: 1050516480}
+  nameField: {fileID: 1036728233}
 --- !u!1 &1649811539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,7 +1971,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -30.1631, y: -13.882}
+  m_AnchoredPosition: {x: -30.163086, y: -13.882019}
   m_SizeDelta: {x: -72.3263, y: -187.7641}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4016177950761577179
