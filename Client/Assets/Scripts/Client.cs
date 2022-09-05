@@ -7,7 +7,7 @@ using System;
 public class Client : MonoBehaviour
 {
     [SerializeField]
-    private TMP_InputField nameField;
+    private TMP_InputField _nameField;
 
     public delegate void OnMessageReceive(object message);
     public event OnMessageReceive onMessageReceive;
@@ -37,15 +37,7 @@ public class Client : MonoBehaviour
         else
             Debug.Log((NetworkError)error);
 
-        nameField.onSubmit.AddListener(OnNameFieldWasChange);
-    }
-
-    private void OnNameFieldWasChange(string name)
-    {
-        if(!nameField.wasCanceled)
-        {
-            SendMessage($"-setname {name}");
-        }
+        _nameField.onSubmit.AddListener(OnNameFieldWasChange);
     }
 
     public void Disconnect()
@@ -53,6 +45,7 @@ public class Client : MonoBehaviour
         if (!isConnected) return;
         NetworkTransport.Disconnect(hostID, connectionID, out error);
         isConnected = false;
+        _nameField.onSubmit.RemoveListener(OnNameFieldWasChange);
     }
     void Update()
     {
@@ -73,7 +66,7 @@ public class Client : MonoBehaviour
                     break;
                 case NetworkEventType.ConnectEvent:
                     onMessageReceive?.Invoke($"You have been connected to server.");
-                    SendMessage(nameField.text);
+                    SendMessage(_nameField.text);
                     Debug.Log($"You have been connected to server.");
                     break;
                 case NetworkEventType.DataEvent:
@@ -91,6 +84,14 @@ public class Client : MonoBehaviour
             }
             recData = NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer,
             bufferSize, out dataSize, out error);
+        }
+    }
+
+    private void OnNameFieldWasChange(string name)
+    {
+        if (!_nameField.wasCanceled)
+        {
+            SendMessage($"-setname {name}");
         }
     }
 
@@ -116,7 +117,7 @@ public class Client : MonoBehaviour
 
             if (string.Equals("-setnamecomplite", commandString))
             {
-                nameField.text = message.Substring(commandEndIndex + 2);
+                _nameField.text = message.Substring(commandEndIndex + 2);
             }
         }
         else

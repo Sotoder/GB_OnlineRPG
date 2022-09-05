@@ -18,7 +18,7 @@ public class UIClientController : MonoBehaviour
     [SerializeField]
     private Client client;
     [SerializeField]
-    private TMP_InputField nameField;
+    private TMP_InputField _nameField;
 
     private void Start()
     {
@@ -30,7 +30,7 @@ public class UIClientController : MonoBehaviour
 
     private void Connect()
     {
-        if(nameField.text.Length < 3)
+        if(_nameField.text.Length < 3)
         {
             textField.ReceiveMessage("Перед подключением необходимо указать имя. Минимальная длина 3 символа");
         }
