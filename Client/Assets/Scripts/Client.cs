@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
+using TMPro;
 
 public class Client : MonoBehaviour
 {
+    [SerializeField]
+    private TMP_InputField nameField;
+
     public delegate void OnMessageReceive(object message);
     public event OnMessageReceive onMessageReceive;
     private const int MAX_CONNECTION = 10;
@@ -19,6 +21,8 @@ public class Client : MonoBehaviour
     private byte error;
     public void Connect()
     {
+        if (isConnected) return;
+
         NetworkTransport.Init();
         ConnectionConfig cc = new ConnectionConfig();
         reliableChannel = cc.AddChannel(QosType.Reliable);
@@ -26,7 +30,9 @@ public class Client : MonoBehaviour
         hostID = NetworkTransport.AddHost(topology, port);
         connectionID = NetworkTransport.Connect(hostID, "192.168.1.33", serverPort, 0, out error);
         if ((NetworkError)error == NetworkError.Ok)
+        {
             isConnected = true;
+        }
         else
             Debug.Log((NetworkError)error);
     }
@@ -55,7 +61,7 @@ public class Client : MonoBehaviour
                     break;
                 case NetworkEventType.ConnectEvent:
                     onMessageReceive?.Invoke($"You have been connected to server.");
-                  //  SendMessage("My LOGIN");
+                    SendMessage(nameField.text);
                     Debug.Log($"You have been connected to server.");
                     break;
                 case NetworkEventType.DataEvent:

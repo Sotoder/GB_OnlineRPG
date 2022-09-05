@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class UIController : MonoBehaviour
+public class UIClientController : MonoBehaviour
 {
-    [SerializeField]
-    private Button buttonStartServer;
-    [SerializeField]
-    private Button buttonShutDownServer;
     [SerializeField]
     private Button buttonConnectClient;
     [SerializeField]
@@ -20,32 +16,28 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private TextField textField;
     [SerializeField]
-    private Server server;
-    [SerializeField]
     private Client client;
     [SerializeField]
     private TMP_InputField nameField;
 
     private void Start()
     {
-        buttonStartServer.onClick.AddListener(() => StartServer());
-        buttonShutDownServer.onClick.AddListener(() => ShutDownServer());
         buttonConnectClient.onClick.AddListener(() => Connect());
         buttonDisconnectClient.onClick.AddListener(() => Disconnect());
         buttonSendMessage.onClick.AddListener(() => SendMessage());
         client.onMessageReceive += ReceiveMessage;
     }
-    private void StartServer()
-    {
-        server.StartServer();
-    }
-    private void ShutDownServer()
-    {
-        server.ShutDownServer();
-    }
+
     private void Connect()
     {
-        client.Connect();
+        if(nameField.text.Length < 3)
+        {
+            textField.ReceiveMessage("Перед подключением необходимо указать имя. Минимальная длина 3 символа");
+        }
+        else
+        {
+            client.Connect();
+        }
     }
     private void Disconnect()
     {

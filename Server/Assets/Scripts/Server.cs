@@ -11,12 +11,12 @@ public class Server : MonoBehaviour
     private int unreliableChannel;
     private bool isStarted = false;
     private byte error;
-    List<int> connectionIDs = new List<int>();
+    //List<int> connectionIDs = new List<int>();
+    private Dictionary<int, User> _usersMatchings;
 
     public void StartServer()
     {
-
-        
+        _usersMatchings = new Dictionary<int, User>();
         
         NetworkTransport.Init();//инициаализая
         ConnectionConfig cc = new ConnectionConfig();
@@ -56,21 +56,27 @@ public class Server : MonoBehaviour
                 case NetworkEventType.Nothing:
                     break;
                 case NetworkEventType.ConnectEvent:
-                    connectionIDs.Add(connectionId);
-
-                    SendMessageToAll($"Player {connectionId} has connected.");
-                    Debug.Log($"Player {connectionId} has connected.");
+                    _usersMatchings.Add(connectionId, new User());
                     break;
                 case NetworkEventType.DataEvent:
                     string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
 
-                    SendMessageToAll($"Player {connectionId}: {message}"); 
-                    Debug.Log($"Player {connectionId}: {message}");
+                    if (!_usersMatchings[connectionId].IsNameSet)
+                    {
+                        _usersMatchings[connectionId].Name = message;
+                        SendMessageToAll($"All say hello to {message}");
+                    }
+                    else
+                    {
+                        SendMessageToAll($"{_usersMatchings[connectionId].Name}: {message}");
+                    }
+
+                    Debug.Log($"{_usersMatchings[connectionId].Name}: {message}");
                     break;
                 case NetworkEventType.DisconnectEvent:
-                    connectionIDs.Remove(connectionId);
-                    SendMessageToAll($"Player {connectionId} has disconnected.");
-                    Debug.Log($"Player {connectionId} has disconnected.");
+                    SendMessageToAll($"{_usersMatchings[connectionId].Name} has disconnected.");
+                    Debug.Log($"{_usersMatchings[connectionId].Name} has disconnected.");
+                    _usersMatchings.Remove(connectionId);
                     break;
                 case NetworkEventType.BroadcastEvent:
                     break;
@@ -81,9 +87,9 @@ public class Server : MonoBehaviour
     }
     public void SendMessageToAll(string message)
     {
-        for (int i = 0; i < connectionIDs.Count; i++)
+        foreach(var user in _usersMatchings)
         {
-            SendMessage(message, connectionIDs[i]);
+            SendMessage(message, user.Key);
         }
     }
     public void SendMessage(string message, int connectionID)
@@ -92,5 +98,22 @@ public class Server : MonoBehaviour
         NetworkTransport.Send(hostID, connectionID, reliableChannel, buffer, message.Length *
         sizeof(char), out error);
         if ((NetworkError)error != NetworkError.Ok) Debug.Log((NetworkError)error);
+    }
+}
+
+public class User
+{
+    private string _name;
+    private bool _isNameSet;
+
+    public bool IsNameSet => _isNameSet;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            _isNameSet = true;
+        }
     }
 }
