@@ -43,7 +43,6 @@ public class Client : MonoBehaviour
     {
         if (!isConnected) return;
         NetworkTransport.Disconnect(hostID, connectionID, out error);
-        isConnected = false;
         _nameField.onSubmit.RemoveAllListeners();
     }
     void Update()
