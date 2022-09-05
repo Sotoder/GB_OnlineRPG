@@ -33,11 +33,10 @@ public class Client : MonoBehaviour
         if ((NetworkError)error == NetworkError.Ok)
         {
             isConnected = true;
+            _nameField.onSubmit.AddListener(OnNameFieldWasChange);
         }
         else
             Debug.Log((NetworkError)error);
-
-        _nameField.onSubmit.AddListener(OnNameFieldWasChange);
     }
 
     public void Disconnect()
@@ -45,7 +44,7 @@ public class Client : MonoBehaviour
         if (!isConnected) return;
         NetworkTransport.Disconnect(hostID, connectionID, out error);
         isConnected = false;
-        _nameField.onSubmit.RemoveListener(OnNameFieldWasChange);
+        _nameField.onSubmit.RemoveAllListeners();
     }
     void Update()
     {
