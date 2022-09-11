@@ -8,6 +8,8 @@ public class Player : NetworkBehaviour
     [SerializeField]
     private GameObject playerPrefab;
     private GameObject playerCharacter;
+
+    public PlayerCharacter PlayerComponent;
     
     private void Start()
     {
@@ -23,6 +25,8 @@ public class Player : NetworkBehaviour
         playerCharacter = Instantiate(playerPrefab,transform);
         NetworkServer.SpawnWithClientAuthority(playerCharacter,
         connectionToClient);
-     
+
+        PlayerComponent = playerCharacter.GetComponent<PlayerCharacter>();
+        PlayerComponent.Connection = connectionToClient;
     }
 }

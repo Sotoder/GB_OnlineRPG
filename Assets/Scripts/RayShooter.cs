@@ -1,12 +1,17 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
+
 public class RayShooter : FireAction
 {
     private Camera camera;
+    private PlayerCharacter _player;
     protected override void Start()
     {
         base.Start();
         camera = GetComponentInChildren<Camera>();
+        _player = GetComponent<PlayerCharacter>();
     }
     private void Update()
     {
@@ -52,6 +57,7 @@ public class RayShooter : FireAction
         {
             yield break;
         }
+        _player.CmdChekHit();
         var shoot = bullets.Dequeue();
         bulletCount = bullets.Count.ToString();
         ammunition.Enqueue(shoot);
@@ -60,5 +66,21 @@ public class RayShooter : FireAction
         shoot.transform.parent = hit.transform;
         yield return new WaitForSeconds(2.0f);
         shoot.SetActive(false);
+    }
+
+    [Server]
+    public void ChekHit()
+    {
+        var point = new Vector3(Camera.main.pixelWidth / 2,
+        Camera.main.pixelHeight / 2, 0);
+        var ray = camera.ScreenPointToRay(point);
+        if (Physics.Raycast(ray, out var hit))
+        {
+            var enemy = hit.collider.GetComponentInParent<PlayerCharacter>();
+            if (enemy != null)
+            {
+                enemy.GetDamage(5);
+            }
+        }
     }
 }
