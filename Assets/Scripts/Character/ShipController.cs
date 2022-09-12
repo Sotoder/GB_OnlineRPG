@@ -4,7 +4,6 @@ using Network;
 using UI;
 using UnityEngine;
 using UnityEngine.Networking;
-
 namespace Characters
 {
     public class ShipController : NetworkMovableObject
@@ -12,19 +11,19 @@ namespace Characters
         public string PlayerName
         {
             get => playerName;
-            set => playerName = value;
+            set
+            {
+                playerName = value;
+                gameObject.name = value;
+            }
         }
-
         protected override float speed => shipSpeed;
-
         [SerializeField] private Transform cameraAttach;
         private CameraOrbit cameraOrbit;
         private PlayerLabel playerLabel;
         private float shipSpeed;
         private Rigidbody rb;
-
         [SyncVar] private string playerName;
-
         private void OnGUI()
         {
             if (cameraOrbit == null)
@@ -33,7 +32,6 @@ namespace Characters
             }
             cameraOrbit.ShowPlayerLabels(playerLabel);
         }
-
         public override void OnStartAuthority()
         {
             rb = GetComponent<Rigidbody>();
@@ -41,13 +39,13 @@ namespace Characters
             {
                 return;
             }
+            serverPosition = transform.position;
             gameObject.name = playerName;
             cameraOrbit = FindObjectOfType<CameraOrbit>();
             cameraOrbit.Initiate(cameraAttach == null ? transform : cameraAttach);
             playerLabel = GetComponentInChildren<PlayerLabel>();
             base.OnStartAuthority();
         }
-
         protected override void HasAuthorityMovement()
         {
             var spaceShipSettings = SettingsContainer.Instance?.SpaceShipSettings;
@@ -55,11 +53,11 @@ namespace Characters
             {
                 return;
             }
-
             var isFaster = Input.GetKey(KeyCode.LeftShift);
             var speed = spaceShipSettings.ShipSpeed;
             var faster = isFaster ? spaceShipSettings.Faster : 1.0f;
 
+            serverPosition = transform.position;
             shipSpeed = Mathf.Lerp(shipSpeed, speed * faster,
                 SettingsContainer.Instance.SpaceShipSettings.Acceleration);
 
@@ -67,10 +65,8 @@ namespace Characters
                 ? SettingsContainer.Instance.SpaceShipSettings.FasterFov
                 : SettingsContainer.Instance.SpaceShipSettings.NormalFov;
             cameraOrbit.SetFov(currentFov, SettingsContainer.Instance.SpaceShipSettings.ChangeFovSpeed);
-
             var velocity = cameraOrbit.transform.TransformDirection(Vector3.forward) * shipSpeed;
             rb.velocity = velocity * Time.deltaTime;
-
             if (!Input.GetKey(KeyCode.C))
             {
                 var targetRotation = Quaternion.LookRotation(
@@ -80,13 +76,35 @@ namespace Characters
             }
         }
 
-        protected override void FromServerUpdate() { }
+        protected override void FromServerUpdate()
+        {
+            transform.position = serverPosition;
+        }
         protected override void SendToServer() { }
 
         [ClientCallback]
         private void LateUpdate()
         {
             cameraOrbit?.CameraMovement();
+            gameObject.name = playerName;
+        }
+
+        [ServerCallback]
+        public void OnTriggerEnter(Collider other)
+        {
+            RpcChangePosition(
+                new Vector3(
+                    Random.Range(50,150),
+                    Random.Range(50, 150),
+                    Random.Range(50, 150)));
+        }
+
+        [ClientRpc]
+        public void RpcChangePosition(Vector3 position)
+        {
+            gameObject.SetActive(false);
+            transform.position = position;
+            gameObject.SetActive(true);
         }
     }
 }
