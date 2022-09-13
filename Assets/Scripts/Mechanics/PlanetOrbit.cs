@@ -1,4 +1,6 @@
 using Network;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace Mechanics
@@ -6,6 +8,10 @@ namespace Mechanics
     public class PlanetOrbit : NetworkMovableObject
     {
         protected override float speed => smoothTime;
+        public float OffsetSin => offsetSin;
+        public float OffsetCos => offsetCos;
+        public float RotationSpeed => rotationSpeed;
+        public float CircleInSecond => circleInSecond;
 
         [SerializeField] private Transform aroundPoint;
         [SerializeField] private float smoothTime = .3f;
@@ -15,43 +21,19 @@ namespace Mechanics
         [SerializeField] private float offsetCos = 1;
         [SerializeField] private float rotationSpeed;
 
-        private float dist;
-        private float currentAng;
         private Vector3 currentPositionSmoothVelocity;
-        private float currentRotationAngle;
 
-        private const float circleRadians = Mathf.PI * 2;
-
-        private void Start()
+        private void Awake()
         {
-            if (isServer)
-            {
-                dist = (transform.position - aroundPoint.position).magnitude;
-            }
             Initiate(UpdatePhase.FixedUpdate);
         }
 
         protected override void HasAuthorityMovement()
         {
-            if (!isServer)
+            if (isServer)
             {
-                return;
+                SendToServer();
             }
-
-            Vector3 p = aroundPoint.position;
-            p.x += Mathf.Sin(currentAng) * dist * offsetSin;
-            p.z += Mathf.Cos(currentAng) * dist * offsetCos;
-            transform.position = p;
-            currentRotationAngle += Time.deltaTime * rotationSpeed;
-            currentRotationAngle = Mathf.Clamp(currentRotationAngle, 0, 361);
-            if (currentRotationAngle >= 360)
-            {
-                currentRotationAngle = 0;
-            }
-            transform.rotation = Quaternion.AngleAxis(currentRotationAngle, transform.up);
-            currentAng += circleRadians * circleInSecond * Time.deltaTime;
-
-            SendToServer();
         }
 
         protected override void SendToServer()

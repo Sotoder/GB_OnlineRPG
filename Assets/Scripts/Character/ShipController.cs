@@ -1,9 +1,12 @@
 using Main;
 using Mechanics;
 using Network;
+using System;
 using UI;
 using UnityEngine;
 using UnityEngine.Networking;
+using Random = UnityEngine.Random;
+
 namespace Characters
 {
     public class ShipController : NetworkMovableObject
@@ -17,6 +20,10 @@ namespace Characters
                 gameObject.name = value;
             }
         }
+
+        public int PlayerID;
+        public Action<int, GameObject> OnCristallCollision;
+
         protected override float speed => shipSpeed;
         [SerializeField] private Transform cameraAttach;
         private CameraOrbit cameraOrbit;
@@ -92,11 +99,20 @@ namespace Characters
         [ServerCallback]
         public void OnTriggerEnter(Collider other)
         {
-            RpcChangePosition(
-                new Vector3(
-                    Random.Range(50,150),
-                    Random.Range(50, 150),
-                    Random.Range(50, 150)));
+            if (other.tag == "Cristall")
+            {
+                OnCristallCollision?.Invoke(PlayerID, other.gameObject);
+                other.gameObject.SetActive(false);
+            }
+            else
+            {
+
+                RpcChangePosition(
+                    new Vector3(
+                        Random.Range(50, 150),
+                        Random.Range(50, 150),
+                        Random.Range(50, 150)));
+            }
         }
 
         [ClientRpc]
