@@ -70,13 +70,13 @@ namespace Mechanics
             _manager = solarSystemNetworkManager;
         }
 
-        public void SetCrisstalsConfig(Dictionary<int, GameObject> cristallsList, float rotationSpeed)
+        public void SetCrisstalsConfig(List<GameObject> cristallsList, float rotationSpeed)
         {
             _cristallsTransform = new TransformAccessArray(cristallsList.Count);
             _cristallAngles = new NativeArray<float>(cristallsList.Count, Allocator.Persistent);
             _rotationSpeed = rotationSpeed;
 
-            for (int i = 0; i < cristallsList.Count; i++)
+            for(int i = 0; i < cristallsList.Count; i++)
             {
                 _cristallsTransform.Add(cristallsList[i].transform);
                 _cristallAngles[i] = Random.Range(0f, 361f);

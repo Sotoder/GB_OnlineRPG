@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Networking;
 
-public class LoginMessege: MessageBase
+public class MessageString: MessageBase
 {
     public string messege;
 
