@@ -18,7 +18,7 @@ namespace Main
         [Header("Cristalls")]
         [SerializeField] private GameObject _cristallPref;
         [SerializeField] private GameObject _cristallsHolder;
-        [SerializeField] private int _cristallsCount;
+        [SerializeField] private int _maxCristallsCount;
         [SerializeField] private int _spawnRadius;
         [SerializeField] private float _rotationSpeed;
 
@@ -28,6 +28,7 @@ namespace Main
         private int _currentCristalCount;
         private Dictionary<int, ShipController> _shipMatchings = new Dictionary<int, ShipController>();
         private Dictionary<int, GameObject> _cristalls = new Dictionary<int,GameObject>();
+        private Dictionary<int, int> _leaderTab = new Dictionary<int, int>();
 
         private Vector4 _tmpCristallRotation;
 
@@ -35,7 +36,7 @@ namespace Main
         {
             _manager = GetComponent<NetworkManager>();
             _objectMover.SetNetworkmanager(this);
-            _currentCristalCount = _cristallsCount;
+            _currentCristalCount = _maxCristallsCount;
 
             _startServerButton.onClick.AddListener(ManualStartServer);
             _stopServerButton.onClick.AddListener(_manager.StopServer);
@@ -56,10 +57,13 @@ namespace Main
             base.OnClientConnect(conn);
 
             client.RegisterHandler(101, CreateCristallOnClient);
-            client.RegisterHandler(102, ReciveRotateCristallOnClient);
-            client.RegisterHandler(103, ReciveIDCristallOnClient);
-            client.RegisterHandler(104, RecivePlayerID);
+            client.RegisterHandler(102, ReciveRotationCristallOnClient);
+            client.RegisterHandler(103, ReciveCristallIdForRotate);
+            client.RegisterHandler(104, RecivePlayerIDOnServer);
             client.RegisterHandler(105, ReciveCristallIDForDelete);
+            client.RegisterHandler(106, ReciveCurrentCristallCount);
+            client.RegisterHandler(107, ReciveCollectedCristallCount);
+            client.RegisterHandler(108, ReciveStopGame);
 
             var login = new LoginMessege();
             login.messege = _playerNameField.text == "" ? "Player" + conn.connectionId.ToString() : _playerNameField.text;
@@ -76,66 +80,105 @@ namespace Main
             ship.PlayerID = conn.connectionId;
             ship.OnCristallCollision += CristallCollision;
 
-            var idMessage = new MessageInt
-            {
-                Number = conn.connectionId
-            };
-            NetworkServer.SendToClient(conn.connectionId, 104, idMessage);
-
+            SendInt(conn.connectionId, 104, conn.connectionId);
 
             _shipMatchings.Add(conn.connectionId, ship);
+            _leaderTab.Add(conn.connectionId, 0);
+
+            if(_currentCristalCount != _maxCristallsCount)
+            {
+                SendInt(_currentCristalCount, 106, conn.connectionId);
+            }
 
             NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 
             for(int i = 0; i < _cristalls.Count; i++)
             {
-                var cristallPositionMsg = new MessageVector()
-                {
-                    Vector3 = _cristalls[i].transform.position
-                };
-
-                NetworkServer.SendToClient(conn.connectionId, 101, cristallPositionMsg);
+                SendVector3(_cristalls[i].transform.position, 101, conn.connectionId);
             }
         }
 
         #region Send
-        public void SendCristallRotation(Vector4 vector4)
+
+        public void SendInt(int messageInt, short messageId)
         {
-            var cristallRotationMsg = new MessageVector4()
+            var message = new MessageInt
+            {
+                Number = messageInt
+            };
+
+            NetworkServer.SendToAll(messageId, message);
+        }
+
+        public void SendInt(int messageInt, short messageId, int clientID)
+        {
+            var message = new MessageInt
+            {
+                Number = messageInt
+            };
+
+            NetworkServer.SendToClient(clientID, messageId, message);
+        }
+
+        public void SendVector4(Vector4 vector4, short messageID)
+        {
+            var message = new MessageVector4()
             {
                 Vector4 = vector4
             };
 
-            NetworkServer.SendToAll(102, cristallRotationMsg);
+            NetworkServer.SendToAll(messageID, message);
         }
 
-        public void SendCristalId(int id)
+        public void SendVector3(Vector3 vector3, short messageID, int clientID)
         {
-            var cristallIdMsg = new MessageInt()
+            var message = new MessageVector()
             {
-                Number = id
+                Vector3 = vector3
             };
 
-            NetworkServer.SendToAll(103, cristallIdMsg);
+            NetworkServer.SendToClient(clientID, messageID, message);
         }
+
         #endregion
 
         #region ClientRecive
-        private void RecivePlayerID(NetworkMessage netMsg)
+        private void RecivePlayerIDOnServer(NetworkMessage netMsg)
         {
             var id = netMsg.reader.ReadInt16();
             _playerServerID = id;
         }
 
-        private void ReciveRotateCristallOnClient(NetworkMessage netMsg)
+        private void ReciveStopGame(NetworkMessage netMsg)
+        {
+            var timeScale = netMsg.reader.ReadInt16();
+            Time.timeScale = timeScale;
+        }
+
+        private void ReciveRotationCristallOnClient(NetworkMessage netMsg)
         {
             var rotation = netMsg.reader.ReadVector4();
 
             _tmpCristallRotation = rotation;
         }
 
-        private void ReciveIDCristallOnClient(NetworkMessage netMsg)
+        private void ReciveCurrentCristallCount(NetworkMessage netMsg)
         {
+            var currentCristallCount = netMsg.reader.ReadInt16();
+
+            _currentCristalCount = currentCristallCount;
+        }
+
+        private void ReciveCollectedCristallCount(NetworkMessage netMsg)
+        {
+            _collectCristallCount++;
+        }
+
+
+        private void ReciveCristallIdForRotate(NetworkMessage netMsg)
+        {
+            if (_cristalls.Count == 0) return; // костыль от забивания канала ошибками до создания кристаллов на клиенте, требуется при малом числе кристаллов
+
             var id = netMsg.reader.ReadInt16();
 
             var cristall = _cristalls[id];
@@ -163,7 +206,6 @@ namespace Main
             var cristallID = netMsg.reader.ReadInt16();
 
             _cristalls[cristallID].SetActive(false);
-            _collectCristallCount++;
         }
         #endregion
 
@@ -206,13 +248,13 @@ namespace Main
             {
                 if (cristall.Value.gameObject == cristallObject)
                 {
-                    var cristallKeyMsg = new MessageInt
-                    {
-                        Number = cristall.Key
-                    };
+                    SendInt(cristall.Key, 105);
 
-                    NetworkServer.SendToAll(105, cristallKeyMsg);
                     _currentCristalCount--;
+                    SendInt(_currentCristalCount, 106);
+
+                    _leaderTab[clientID]++;
+                    SendInt(1, 107, clientID);
 
                     if (_currentCristalCount <= 0)
                     {
@@ -224,12 +266,13 @@ namespace Main
 
         private void ShowLeaderTab()
         {
+            SendInt(0, 108);
         }
 
         private void CreateCristalls()
         {
             
-            for (int i = 0; i < _cristallsCount; i++)
+            for (int i = 0; i < _maxCristallsCount; i++)
             {
                 var cristall = Instantiate(_cristallPref, _cristallsHolder.transform);
                 cristall.transform.position = Random.insideUnitSphere * _spawnRadius;

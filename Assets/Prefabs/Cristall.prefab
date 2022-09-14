@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 8013231582824353499}
   - component: {fileID: 6356800035375649051}
   - component: {fileID: -4445046477164036090}
+  - component: {fileID: 4243001319852799665}
   m_Layer: 0
   m_Name: Cristall
   m_TagString: Cristall
@@ -493,12 +494,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.1
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
-  m_SyncSpin: 0
+  m_SyncSpin: 1
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
-  m_InterpolateMovement: 1
+  m_InterpolateMovement: 0.27
+--- !u!114 &4243001319852799665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7575915395286428625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34cbc4338826545c59fcd11978e87f06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visRange: 1000
+  visUpdateInterval: 1
+  checkMethod: 0
+  forceHidden: 0

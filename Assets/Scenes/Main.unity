@@ -1333,7 +1333,7 @@ MonoBehaviour:
   _objectMover: {fileID: 1931400638}
   _cristallPref: {fileID: 7575915395286428625, guid: 9ef425b0bea76d547a86d0f9a8fdcfb0, type: 3}
   _cristallsHolder: {fileID: 1248036657}
-  _cristallsCount: 10
+  _maxCristallsCount: 1
   _spawnRadius: 200
   _rotationSpeed: 25
 --- !u!114 &361298993
