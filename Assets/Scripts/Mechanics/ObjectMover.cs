@@ -115,14 +115,14 @@ namespace Mechanics
                 var cristallRotationJobHandler = cristallRotationJob.Schedule(_cristallsTransform);
                 cristallRotationJobHandler.Complete();
 
-                for(int i = 0; i < _cristallsTransform.length; i++)
-                {
-                    _manager.SendVector4(new Vector4(_cristallsTransform[i].rotation.x,
-                                                              _cristallsTransform[i].rotation.y,
-                                                              _cristallsTransform[i].rotation.z,
-                                                              _cristallsTransform[i].rotation.w), 102);
-                    _manager.SendInt(i, 103);
-                }
+                //for(int i = 0; i < _cristallsTransform.length; i++)
+                //{
+                //    _manager.SendVector4(new Vector4(_cristallsTransform[i].rotation.x,
+                //                                              _cristallsTransform[i].rotation.y,
+                //                                              _cristallsTransform[i].rotation.z,
+                //                                              _cristallsTransform[i].rotation.w), 102);
+                //    _manager.SendInt(i, 103);
+                //}
             }
         }
 

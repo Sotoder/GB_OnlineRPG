@@ -22,7 +22,7 @@ namespace Characters
         }
 
         public int PlayerID;
-        public Action<int, GameObject> OnCristallCollision;
+        public Action<int> OnCristallCollision;
 
         protected override float speed => shipSpeed;
         [SerializeField] private Transform cameraAttach;
@@ -101,8 +101,8 @@ namespace Characters
         {
             if (other.tag == "Cristall")
             {
-                OnCristallCollision?.Invoke(PlayerID, other.gameObject);
-                other.gameObject.SetActive(false);
+                OnCristallCollision?.Invoke(PlayerID);
+                Destroy(other.gameObject);
             }
             else
             {

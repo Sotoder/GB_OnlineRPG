@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 8013231582824353499}
   - component: {fileID: 6356800035375649051}
   - component: {fileID: -4445046477164036090}
-  - component: {fileID: 4243001319852799665}
+  - component: {fileID: -576934236946824639}
   m_Layer: 0
   m_Name: Cristall
   m_TagString: Cristall
@@ -503,7 +503,7 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 0.27
---- !u!114 &4243001319852799665
+--- !u!114 &-576934236946824639
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
