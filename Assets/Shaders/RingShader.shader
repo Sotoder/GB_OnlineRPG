@@ -1,4 +1,4 @@
-Shader "Custom/StencilSurfaceShader"
+Shader "Custom/RingShader"
 {
 	Properties
 	{
