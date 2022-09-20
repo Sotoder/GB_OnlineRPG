@@ -35,6 +35,8 @@ Shader "Custom/RingShader"
 		{
           v.vertex.xz += v.normal.xz * _TextureOffset;
 		  v.vertex.y = 0;
+
+		  v.texcoord.x += 2 * _Time;
 		}
 
 		float4 _Vertex;
