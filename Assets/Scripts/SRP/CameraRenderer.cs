@@ -18,11 +18,11 @@ partial class CameraRenderer
         _camera = camera;
         _context = context;
 
+        PrepareForSceneWindow();
         if (!Cull(out var parameters))
         {
             return;
         }
-        PrepareForSceneWindow();
         Settings(parameters);
         DrawVisible();
         DrawUnsupportedShaders();
