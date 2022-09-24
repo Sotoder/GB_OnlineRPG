@@ -41,7 +41,7 @@ float SpecularStrength (Surface surface, BRDF brdf, Light light) {
 }
 
 float3 DirectBRDF (Surface surface, BRDF brdf, Light light) {
-	return SpecularStrength(surface, brdf, light) * brdf.specular + brdf.diffuse;
+	return SpecularStrength(surface, brdf, light) * brdf.specular + brdf.diffuse * 5;
 }
 
 #endif

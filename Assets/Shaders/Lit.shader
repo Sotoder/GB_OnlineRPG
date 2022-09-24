@@ -33,6 +33,7 @@ Shader "Custom RP/Lit" {
 			#pragma vertex LitPassVertex
 			#pragma fragment LitPassFragment
 			#include "LitPass.hlsl"
+
 			ENDHLSL
 		}
 	}

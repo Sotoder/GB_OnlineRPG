@@ -51,7 +51,6 @@ Shader "Unlit/StancilHole"
              float4 _MainTex_ST;
              fixed4 _Color;
              float _TextureOffset;
-             float _CloudRotationSpeed;
              
              v2f vert (a2v v)
              {

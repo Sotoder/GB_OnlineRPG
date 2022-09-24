@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mars
-  m_Shader: {fileID: 4800000, guid: f75296bb3d7c54300b1456adfb083c1d, type: 3}
+  m_Shader: {fileID: 4800000, guid: bc4a2ee1c7931d945939cd54d025efe7, type: 3}
   m_ShaderKeywords: _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -77,16 +77,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaClip: 0
+    - _AlphaScale: 1
     - _Blend: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Clipping: 0
+    - _CloudRotationSpeed: 0.5
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
+    - _DstBlend: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
@@ -103,6 +105,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _TextureOffset: 0.015
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

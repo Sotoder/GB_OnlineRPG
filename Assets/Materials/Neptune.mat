@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Neptune
-  m_Shader: {fileID: 4800000, guid: f75296bb3d7c54300b1456adfb083c1d, type: 3}
+  m_Shader: {fileID: 4800000, guid: bc4a2ee1c7931d945939cd54d025efe7, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
