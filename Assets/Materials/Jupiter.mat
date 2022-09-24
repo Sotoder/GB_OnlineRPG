@@ -8,20 +8,19 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Jupiter
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: f75296bb3d7c54300b1456adfb083c1d, type: 3}
   m_ShaderKeywords: _DETAIL_MULX2 _METALLICSPECGLOSSMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 0d57897cc0e5ad240a1882df85daaf1e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 86d9f9b2fc3d4734188a9db9b71ea7b6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -103,6 +102,7 @@ Material:
     - _CityEmissionStrength: 0.5
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _Clipping: 0
     - _CloudAlpha: 1
     - _Cull: 2
     - _Cutoff: 0.5
@@ -117,6 +117,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PremulAlpha: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Shininess: 10

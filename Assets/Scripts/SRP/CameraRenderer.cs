@@ -1,11 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEditor;
-using UnityEngine.Experimental.Rendering;
-using Conditional = System.Diagnostics.ConditionalAttribute;
-using Unity.Collections;
 
 partial class CameraRenderer
 {
@@ -15,25 +10,8 @@ partial class CameraRenderer
     private CommandBuffer _commandBuffer;
     private const string bufferName = "Camera Render";
     private CullingResults _cullingResult;
-    private static readonly List<ShaderTagId> drawingShaderTagIds = new List<ShaderTagId>{new ShaderTagId("SRPDefaultUnlit"),};
-
-    const int maxVisibleLights = 16;
-
-    static int visibleLightColorsId =
-        Shader.PropertyToID("_VisibleLightColors");
-    static int visibleLightDirectionsOrPositionsId =
-        Shader.PropertyToID("_VisibleLightDirectionsOrPositions");
-    static int visibleLightAttenuationsId =
-        Shader.PropertyToID("_VisibleLightAttenuations");
-    static int visibleLightSpotDirectionsId =
-        Shader.PropertyToID("_VisibleLightSpotDirections");
-    static int lightIndicesOffsetAndCountID =
-        Shader.PropertyToID("unity_LightIndicesOffsetAndCount");
-
-    Vector4[] visibleLightColors = new Vector4[maxVisibleLights];
-    Vector4[] visibleLightDirectionsOrPositions = new Vector4[maxVisibleLights];
-    Vector4[] visibleLightAttenuations = new Vector4[maxVisibleLights];
-    Vector4[] visibleLightSpotDirections = new Vector4[maxVisibleLights];
+    private static readonly List<ShaderTagId> drawingShaderTagIds = new List<ShaderTagId>{new ShaderTagId("SRPDefaultUnlit"), new ShaderTagId("CustomLit")};
+    private Lighting lighting = new Lighting();
 
     public void Render(ScriptableRenderContext context, Camera camera)
     {
@@ -46,37 +24,11 @@ partial class CameraRenderer
         }
         PrepareForSceneWindow();
         Settings(parameters);
+        lighting.Setup(context, _cullingResult);
         DrawVisible();
         DrawUnsupportedShaders();
         DrawGizmos();
         Submit();
-
-        if (_cullingResult.visibleLights.Length > 0)
-        {
-            ConfigureLights();
-        }
-        else
-        {
-            _commandBuffer.SetGlobalVector(
-                lightIndicesOffsetAndCountID, Vector4.zero
-            );
-        }
-
-        _commandBuffer.SetGlobalVectorArray(
-        visibleLightColorsId, visibleLightColors
-        );
-        _commandBuffer.SetGlobalVectorArray(
-            visibleLightDirectionsOrPositionsId, visibleLightDirectionsOrPositions
-        );
-        _commandBuffer.SetGlobalVectorArray(
-            visibleLightAttenuationsId, visibleLightAttenuations
-        );
-        _commandBuffer.SetGlobalVectorArray(
-            visibleLightSpotDirectionsId, visibleLightSpotDirections
-        );
-        context.ExecuteCommandBuffer(_commandBuffer);
-        _commandBuffer.Clear();
-
     }
 
     private void Submit()
@@ -98,6 +50,7 @@ partial class CameraRenderer
 
         _context.DrawSkybox(_camera);
 
+        drawingSettings.enableDynamicBatching = true;
         sortingSettings.criteria = SortingCriteria.CommonTransparent;
         drawingSettings.sortingSettings = sortingSettings;
         filteringSettings.renderQueueRange = RenderQueueRange.transparent;
@@ -145,67 +98,5 @@ partial class CameraRenderer
         _context.ExecuteCommandBuffer(_commandBuffer);
         _commandBuffer.Clear();
     }
-
-    void ConfigureLights()
-    {
-        for (int i = 0; i < _cullingResult.visibleLights.Length; i++)
-        {
-            if (i == maxVisibleLights)
-            {
-                break;
-            }
-            VisibleLight light = _cullingResult.visibleLights[i];
-            visibleLightColors[i] = light.finalColor;
-            Vector4 attenuation = Vector4.zero;
-            attenuation.w = 1f;
-
-            if (light.lightType == LightType.Directional)
-            {
-                Vector4 v = light.localToWorldMatrix.GetColumn(2);
-                v.x = -v.x;
-                v.y = -v.y;
-                v.z = -v.z;
-                visibleLightDirectionsOrPositions[i] = v;
-            }
-            else
-            {
-                visibleLightDirectionsOrPositions[i] =
-                    light.localToWorldMatrix.GetColumn(3);
-                attenuation.x = 1f /
-                    Mathf.Max(light.range * light.range, 0.00001f);
-
-                if (light.lightType == LightType.Spot)
-                {
-                    Vector4 v = light.localToWorldMatrix.GetColumn(2);
-                    v.x = -v.x;
-                    v.y = -v.y;
-                    v.z = -v.z;
-                    visibleLightSpotDirections[i] = v;
-
-                    float outerRad = Mathf.Deg2Rad * 0.5f * light.spotAngle;
-                    float outerCos = Mathf.Cos(outerRad);
-                    float outerTan = Mathf.Tan(outerRad);
-                    float innerCos =
-                        Mathf.Cos(Mathf.Atan((46f / 64f) * outerTan));
-                    float angleRange = Mathf.Max(innerCos - outerCos, 0.001f);
-                    attenuation.z = 1f / angleRange;
-                    attenuation.w = -outerCos * attenuation.z;
-                }
-            }
-
-            visibleLightAttenuations[i] = attenuation;
-        }
-
-        if (_cullingResult.visibleLights.Length > maxVisibleLights)
-        {
-            NativeArray<int> lightIndices = _cullingResult.GetLightIndexMap(Allocator.Persistent);
-            for (int i = maxVisibleLights; i < _cullingResult.visibleLights.Length; i++)
-            {
-                lightIndices[i] = -1;
-            }
-            _cullingResult.SetLightIndexMap(lightIndices);
-        }
-    }
-
 }
 

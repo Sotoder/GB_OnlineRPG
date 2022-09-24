@@ -1,17 +1,24 @@
-Shader "Unlit/Atmosfere"
+Shader "Unlit/RingShader"
   {
       Properties
       {
-          _TextureOffset("TextureOffset", Range(0, 0.03)) = 0.015
-          _CloudRotationSpeed("CloudRotationSpeed", Range(0, 3)) = 0.5
+          _RingRotationSpeed("RingRotationSpeed", Range(0, 3)) = 0.5
           _Color ("Color", Color) = (1,1,1,1)
           _MainTex ("Texture", 2D) = "white" {}
           _AlphaScale ("Alpha Scale", Range(0, 1)) = 1
+		  _TextureOffset("Ring Radius", Range(0, 0.9)) = 0.2
       }
       SubShader
      {
          Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
          Cull Off
+
+         Stencil
+		 {
+		     Ref 1
+		     Comp NotEqual
+		 }
+
          Pass
          {
              ZWrite On
@@ -31,6 +38,7 @@ Shader "Unlit/Atmosfere"
              
              #include "UnityCG.cginc"
              #include "Lighting.cginc"
+
  
              struct a2v
              {
@@ -52,16 +60,17 @@ Shader "Unlit/Atmosfere"
              fixed4 _Color;
              fixed _AlphaScale;
              float _TextureOffset;
-             float _CloudRotationSpeed;
+             float _RingRotationSpeed;
              
              v2f vert (a2v v)
              {
                  v2f o;
  
-                 v.vertex.xyz += v.normal * _TextureOffset;
+                 v.vertex.xz += v.normal.xz * _TextureOffset;
+		         v.vertex.y = 0;
                  o.pos = UnityObjectToClipPos(v.vertex);
 
-                 v.texcoord.x += _CloudRotationSpeed * _Time;
+                 v.texcoord.x += _RingRotationSpeed * _Time;
                  o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                  o.worldNormal = UnityObjectToWorldNormal(v.normal);
                  o.worldPos = mul(unity_ObjectToWorld, v.vertex);

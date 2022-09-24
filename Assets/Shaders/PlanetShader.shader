@@ -16,6 +16,7 @@ Shader "Custom/PlanetShader"
         {
             Tags { "RenderType" = "Opaque" }
             LOD 200
+            Cull Off
 
             CGPROGRAM
             #pragma surface surf  Lambert noforwardadd noshadow vertex:vert
