@@ -1,4 +1,4 @@
-Shader "Lit/Atmosphere"
+Shader "Lit/Atmosfere"
   {
       Properties
       {
@@ -16,7 +16,7 @@ Shader "Lit/Atmosphere"
 		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("Src Blend", Float) = 1
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Dst Blend", Float) = 0
 
-		_TextureOffset("Atmosphere Radius", Range(0, 0.03)) = 0.015
+		_TextureOffset("Ring Radius", Range(0, 0.03)) = 0.015
       }
       SubShader
      {
