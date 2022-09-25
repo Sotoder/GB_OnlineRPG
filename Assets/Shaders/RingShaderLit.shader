@@ -1,4 +1,4 @@
-Shader "Unlit/RingShader"
+Shader "Lit/RingShader"
   {
       Properties
       {

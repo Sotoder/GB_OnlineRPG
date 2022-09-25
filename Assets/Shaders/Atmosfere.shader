@@ -1,4 +1,4 @@
-Shader "Unlit/Atmosfere"
+Shader "Lit/Atmosfere"
   {
       Properties
       {

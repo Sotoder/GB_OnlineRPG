@@ -22,8 +22,8 @@ Shader "Custom RP/Lit" {
 				"LightMode" = "CustomLit"
 			}
 
-			Blend [_SrcBlend] [_DstBlend]
-			ZWrite [_ZWrite]
+			//Blend [_SrcBlend] [_DstBlend]
+			//ZWrite [_ZWrite]
 
 			HLSLPROGRAM
 			#pragma target 3.5
