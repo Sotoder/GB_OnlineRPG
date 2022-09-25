@@ -3,17 +3,10 @@ using UnityEngine.Rendering;
 using UnityEditor;
 partial class CameraRenderer
 {
-    
-    partial void DrawGizmos()
-    {
-        if (!Handles.ShouldRenderGizmos())
-        {
-            return;
-        }
-        _context.DrawGizmos(_camera, GizmoSubset.PreImageEffects);
-        _context.DrawGizmos(_camera, GizmoSubset.PostImageEffects);
-    }
+    partial void DrawGizmos();
+    partial void DrawUnsupportedShaders();
     partial void PrepareForSceneWindow();
+
 #if UNITY_EDITOR
     partial void PrepareForSceneWindow()
     {
@@ -21,6 +14,16 @@ partial class CameraRenderer
         {
             ScriptableRenderContext.EmitWorldGeometryForSceneView(_camera);
         }
+    }
+
+    partial void DrawGizmos()
+    {
+        //if (!Handles.ShouldRenderGizmos())
+        //{
+        //    return;
+        //}
+        _context.DrawGizmos(_camera, GizmoSubset.PreImageEffects);
+        _context.DrawGizmos(_camera, GizmoSubset.PostImageEffects);
     }
 
     private static readonly ShaderTagId[] _legacyShaderTagIds =
@@ -34,9 +37,7 @@ partial class CameraRenderer
     };
 
     private static Material _errorMaterial = new Material(Shader.Find("Hidden/InternalErrorShader"));
-    partial void DrawGizmos();
 
-    partial void DrawUnsupportedShaders();
     partial void DrawUnsupportedShaders()
     {
         var drawingSettings = new DrawingSettings(_legacyShaderTagIds[0], new SortingSettings(_camera))

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -37,8 +38,6 @@ partial class CameraRenderer
         ExecuteCommandBuffer();
         _context.Submit();
     }
-
-
 
     private void DrawVisible()
     {
