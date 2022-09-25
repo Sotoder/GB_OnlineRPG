@@ -19,6 +19,7 @@ UNITY_INSTANCING_BUFFER_START(UnityPerMaterial)
 	UNITY_DEFINE_INSTANCED_PROP(float, _TextureOffset)
 	UNITY_DEFINE_INSTANCED_PROP(float, _RingRotationSpeed)
 	UNITY_DEFINE_INSTANCED_PROP(float, _AlphaScale)
+	UNITY_DEFINE_INSTANCED_PROP(float, _RotationSpeed)
 UNITY_INSTANCING_BUFFER_END(UnityPerMaterial)
 
 struct Attributes {
@@ -40,6 +41,7 @@ Varyings LitPassVertex (Attributes input) {
 	Varyings output;
 
 	input.positionOS.xyz += input.normalOS * _TextureOffset;
+	input.baseUV.x += _RotationSpeed * _Time;
 
 	UNITY_SETUP_INSTANCE_ID(input);
 	UNITY_TRANSFER_INSTANCE_ID(input, output);

@@ -17,6 +17,7 @@ Shader "Lit/RingShader"
 		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend ("Dst Blend", Float) = 0
 
 		_TextureOffset("Ring Radius", Range(0, 0.9)) = 0.2
+        _RotationSpeed("RotationSpeed", Range(0, 3)) = 0.5
       }
       SubShader
      {
