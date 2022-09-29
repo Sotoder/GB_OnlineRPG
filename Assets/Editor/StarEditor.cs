@@ -6,15 +6,16 @@ public class StarEditor : Editor
     private SerializedProperty _center;
     private SerializedProperty _points;
     private SerializedProperty _frequency;
+    private Star _target;
     private void OnEnable()
     {
+        _target = (Star)target;
         _center = serializedObject.FindProperty("_center");
         _points = serializedObject.FindProperty("_points");
         _frequency = serializedObject.FindProperty("_frequency");
     }
     public override void OnInspectorGUI()
     {
-        //serializedObject.Update();
         EditorGUILayout.PropertyField(_center);
         EditorGUILayout.PropertyField(_points);
         EditorGUILayout.IntSlider(_frequency, 1, 20);
@@ -30,6 +31,7 @@ public class StarEditor : Editor
             MessageType.Info);
         }
         serializedObject.ApplyModifiedProperties();
+        _target.UpdateMesh();
     }
     
     
