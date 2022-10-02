@@ -10,6 +10,7 @@ namespace Main
 {
     public class SolarSystemNetworkManager : NetworkManager
     {
+        [SerializeField] private SpawnPointsMap _spawnPointsMap;
         [SerializeField] private InputField _playerNameField;
         [SerializeField] private Button _startServerButton;
         [SerializeField] private Button _stopServerButton;
@@ -54,6 +55,19 @@ namespace Main
             base.OnStartServer();
             StartCoroutine(SpawnCristalls());
             NetworkServer.RegisterHandler(100, ReciveLoginMessege);
+            for (int i = 0; i < _spawnPointsMap.SpawnPoints.Count; i++)
+            {
+                _spawnPointsMap.SpawnPoints[i].HideMark();
+            }
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            for (int i = 0; i < _spawnPointsMap.SpawnPoints.Count; i++)
+            {
+                _spawnPointsMap.SpawnPoints[i].ShowMark();
+            }
         }
 
         public override void OnStartClient(NetworkClient client)

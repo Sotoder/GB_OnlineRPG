@@ -10,11 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 817868168f41eb24b966b566c82aac1c, type: 3}
-  m_Name: SpaceShipSettings
+  m_Name: SpaceShipSettings 1
   m_EditorClassIdentifier: 
-  acceleration: 0.0124
-  shipSpeed: 1193
-  faster: 5
+  acceleration: 0
+  shipSpeed: 0
+  faster: 0
   normalFov: 60
-  fasterFov: 39.3
+  fasterFov: 30
   changeFovSpeed: 0.5
+  _worldScreenHeight: 1000
+  _renderTextureHeight: 1080
+  _spawnPoints:
+  - {fileID: 0}
+  _prefab: {fileID: 8028095884167616743, guid: d87c68b0c32528d4fbc9db6fefb032c3, type: 3}
+  _spawnPointsHolder: {fileID: 0}
